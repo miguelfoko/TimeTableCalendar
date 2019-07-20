@@ -1,0 +1,19 @@
+Justification of technical choices:
+
+2) The use of JAVA 7: 
+
+It is the version of Java on which I have more worked, since I have two Java certification (OCA and OCP) for that version.
+
+1) The use of Maven: 
+
+I use Maven to build my project because I don't want to manually manage the needed librairies in my project. Also, Maven facilitates the building of the executable file and manage as well the project structure.
+
+2) To acces files (for reading and writing operations), I use NIO2 Classes (BufferedReader and BufferedWriter) because I want to have more efficient reading/writing access. Note that in these cases, I use the try with ressource block because I don't want to manually close files after reading/writing operations on the disc.
+
+3) JUnit is used to made the unit test in my implementation since it is one of the most easier to use and powerfull libraries to made unit testing of java programs.
+
+4) I used collection framework in my implementation (namely, I used HashMap and ArrayList) in order to easyly managed operations such ass adding a presentation to a list of presentations, adding a day to list of days, sorting elements, ...
+
+5) Finally, I decided to put the project on Git in order to easily manage evolution of my code.
+
+

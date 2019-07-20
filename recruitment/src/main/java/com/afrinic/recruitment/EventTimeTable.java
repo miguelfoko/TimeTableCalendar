@@ -49,13 +49,13 @@ public class EventTimeTable{
 		try (BufferedWriter outputFile = new BufferedWriter(new FileWriter(dstFile))) {
 			for(int q=0;q<inData.size();q++) {
 				int k=q+1;
-				
+
 				ArrayList<String> liste=inData.get(q);
 				int tail=liste.size();
 				int j, i=0;
 				Boolean b=false;
 				while(i<tail && !b) {
-					if(liste.get(i).equals("12:30-14:00 : Lunch"))
+					if(liste.get(i).equals("12:30-14:00: Lunch"))
 						b=true;
 					i++;
 				}
@@ -63,7 +63,7 @@ public class EventTimeTable{
 				i=0;
 				outputFile.newLine();
 				outputFile.newLine();
-				outputFile.write("Day "+k);
+				outputFile.write("Day "+k+':');
 				outputFile.newLine();
 				outputFile.newLine();
 				outputFile.write("Morning session:");
@@ -97,6 +97,7 @@ public class EventTimeTable{
 			System.err.printf("Error when processing file; exiting 2... ");
 		}
 	}
+	//Function that classifies the sessions per day without arrangement
 	public HashMap<Integer, ArrayList<String>> orderDate(ArrayList<String> list){
 		HashMap<Integer, ArrayList<String>> returned=new HashMap<Integer, ArrayList<String>>();
 		ArrayList<Integer> myArray=new ArrayList<Integer>();
@@ -144,33 +145,10 @@ public class EventTimeTable{
 				}
 			}
 		}
-//		System.out.println("Returned in orderDate: "+returned.toString());
 		return returned;
 	}
 
-	public HashMap<Integer, ArrayList<String>> addDate(HashMap<Integer, ArrayList<String>> listOfElements, ArrayList<String> list){
-		HashMap<Integer,ArrayList<String>> returned=new HashMap<Integer, ArrayList<String>>();
-
-		int i=listOfElements.size();
-		for(int j=0;j<i;j++) {
-			ArrayList<String> arrayToReturn=new ArrayList<String>();
-			ArrayList<String> myElements=listOfElements.get(j);
-			for (String string : myElements) {
-				for (int m=0;m<list.size();m++) {
-					String string2=list.get(m);
-					if(string2.contains(string)) {
-						arrayToReturn.add(string2);
-						list.remove(m);
-					}
-				}
-			}
-			returned.put(j, dayEvent(arrayToReturn));
-		}//At the end of this foor loop, we have all the event for a single day, from now, we can 
-		//Just classified them inside given periods
-		//		
-		//		System.out.println("Returned== "+returned.toString());
-		return returned;
-	}
+	//Function that orders sessions in a given day
 	public ArrayList<String> dayEvent(ArrayList<String> list){
 		//The argument list is suppose to contain all the event of a day, but not yet schedulled
 		ArrayList<String> returned=new ArrayList<String>();
@@ -205,7 +183,7 @@ public class EventTimeTable{
 
 				if(calMorning.compareTo(calEndMorning)<=0) {
 					String [] val = morning.split(":");
-					String valRet=morning+"-"+df.format(calMorning.getTime())+" : "+words[1];
+					String valRet=morning+"-"+df.format(calMorning.getTime())+": "+words[1];
 					morning=df.format(calMorning.getTime());
 
 					returned.add(valRet);
@@ -213,7 +191,7 @@ public class EventTimeTable{
 				else {
 					calAfternoon.add(Calendar.MINUTE, time);
 					if(calAfternoon.compareTo(calEndAfternoon)<=0) {
-						String valRet=afternoon+"-"+df.format(calAfternoon.getTime())+" : "+words[1];
+						String valRet=afternoon+"-"+df.format(calAfternoon.getTime())+": "+words[1];
 						afternoon=df.format(calAfternoon.getTime());
 						returned.add(valRet);
 					}
@@ -229,26 +207,50 @@ public class EventTimeTable{
 			aDate=df.parse(time);
 			Calendar calADate=Calendar.getInstance();
 			calADate.setTime(aDate);
-			
+
 			dAfternoon = df.parse(afternoon);
 			Calendar calAfternoon = Calendar.getInstance();
 			calAfternoon.setTime(dAfternoon);
 			String networking=null;
 			if(calAfternoon.compareTo(calADate)<=0) {
-				networking=time+" : "+"Networking";
+				networking=time+": "+"Networking";
 			}
 			else {
-				networking=afternoon+" : "+"Networking";
+				networking=afternoon+": "+"Networking";
 			}
 			returned.add(networking);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 
-		String lunch="12:30-14:00 : Lunch";
+		String lunch="12:30-14:00: Lunch";
 		returned.add(lunch);
 		Collections.sort(returned);
-		
+
+
+		return returned;
+	}
+	
+	//Function that returns all the sessions for all the days in the form of Map<k,V> where k 
+	//represents the day and V the arrays list containing all the sessions of that day
+	public HashMap<Integer, ArrayList<String>> addDate(HashMap<Integer, ArrayList<String>> listOfElements, ArrayList<String> list){
+		HashMap<Integer,ArrayList<String>> returned=new HashMap<Integer, ArrayList<String>>();
+
+		int i=listOfElements.size();
+		for(int j=0;j<i;j++) {
+			ArrayList<String> arrayToReturn=new ArrayList<String>();
+			ArrayList<String> myElements=listOfElements.get(j);
+			for (String string : myElements) {
+				for (int m=0;m<list.size();m++) {
+					String string2=list.get(m);
+					if(string2.contains(string)) {
+						arrayToReturn.add(string2);
+						list.remove(m);
+					}
+				}
+			}
+			returned.put(j, dayEvent(arrayToReturn));
+		}
 		
 		return returned;
 	}
