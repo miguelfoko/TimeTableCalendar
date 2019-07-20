@@ -1,0 +1,8 @@
+Instructions for execution:
+
+1) Make sure that Java 7 or above is installed in your environment and that the $JAVA_HOME variable is properly set
+2) Install Maven 3.6 or above
+3) Open a promt and go to the main directory of the project, that is inside the "recruitment" folder
+4) Make "execution" file executable by running the command "chmod +x execution"
+5) Run the command "mvn clean install"
+6) Execute the "execution" file by typing the command "./execution srcFile dstFile" where "srcFile" represents the absolute path to the input file to be analysed and "dstFile" represents the absolute path of the output containing the full programm of the meeting
